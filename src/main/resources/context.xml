@@ -12,15 +12,38 @@
 		http://www.springframework.org/schema/integration/ip http://www.springframework.org/schema/integration/ip/spring-integration-ip.xsd">
 
 	<context:property-placeholder location="classpath:context.properties" />
-	<context:annotation-config/>
+	<context:component-scan base-package="com.example.telnet"/>
 	
+	<!-- Commands -->
+	<bean id="pwdCommand" class="com.example.telnet.command.impl.PwdCommand"/>
+	<bean id="mkdirCommand" class="com.example.telnet.command.impl.MkdirCommand"/>
+	<bean id="lsCommand" class="com.example.telnet.command.impl.LsCommand"/>
+	<bean id="cdCommand" class="com.example.telnet.command.impl.CdCommand"/>
+
 	<!-- Telnet service -->
 	<bean id="telnetService" class="com.example.telnet.service.TelnetService">
+		<property name="commands">
+	    	<util:map map-class="java.util.Hashtable">
+	    		<entry key="pwd" value-ref="pwdCommand"/>
+	    		<entry key="mkdir" value-ref="mkdirCommand"/>
+	    		<entry key="ls" value-ref="lsCommand"/>
+	    		<entry key="cd" value-ref="cdCommand"/>
+		    </util:map>
+    	</property>
 	</bean>	
 	
 	<!-- Channels, transformers and service activator -->
+	<bean id="interceptorFactory"
+		class="org.springframework.integration.ip.tcp.connection.TcpConnectionInterceptorFactoryChain">
+		<property name="interceptors">
+			<array>
+				<bean class="com.example.telnet.connection.ContextConnectionInterceptorFactory"/>
+			</array>
+		</property>
+	</bean>
+	
 	<int-ip:tcp-connection-factory id="telnetServer" type="server" port="${server.port}" 
-		single-use="false"/>
+		single-use="false" interceptor-factory-chain="interceptorFactory"/>
 
 	<int-ip:tcp-inbound-gateway id="gatewayTelnet" connection-factory="telnetServer"
 		request-channel="requestChannel" error-channel="errorChannel" />
