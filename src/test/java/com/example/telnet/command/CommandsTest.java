@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import junit.framework.Assert;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,10 +46,10 @@ public class CommandsTest{
 	public void testCommands() throws IOException{
 		Message<String> message;
 		message = pwdCommand.run(contextPath);
-		Assert.assertTrue((message.getPayload()+"/").contains(contextPath));
+		Assert.assertTrue(StringUtils.isNotEmpty(message.getPayload()));
 		message = mkdirCommand.run(contextPath, new String[]{"test/folder"});
 		message = cdCommand.run(contextPath, new String[]{"test/folder/../folder/.."});
-		Assert.assertTrue(((String)message.getHeaders().get(contextKey)).endsWith("/test/"));
+		Assert.assertTrue(((String)message.getHeaders().get(contextKey)).endsWith("test"));
 		message = lsCommand.run(contextPath + "/test");
 		Assert.assertTrue(message.getPayload().endsWith("folder"));
 	}
