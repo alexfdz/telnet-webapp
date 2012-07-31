@@ -1,13 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-ip="http://www.springframework.org/schema/integration/ip"
 	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
+		http://www.springframework.org/schema/integration/ip http://www.springframework.org/schema/integration/ip/spring-integration-ip.xsd">
 
 	<context:property-placeholder location="classpath:context.properties" />
 	<context:annotation-config/>
 	
+	<!-- Telnet service -->
+	<bean id="telnetService" class="com.example.telnet.service.TelnetService">
+	</bean>	
+	
+	<!-- Channels, transformers and service activator -->
+	<int-ip:tcp-connection-factory id="telnetServer" type="server" port="${server.port}" 
+		single-use="false"/>
+
+	<int-ip:tcp-inbound-gateway id="gatewayTelnet" connection-factory="telnetServer"
+		request-channel="requestChannel" error-channel="errorChannel" />
 		
+	<int:channel id="toService" />
+	
+	<int:service-activator input-channel="toService" ref="telnetService" method="command"/>
+	
+	<int:transformer id="requestHandler" input-channel="requestChannel"
+		output-channel="toService" expression="new String(payload)"/>
+
+	<int:transformer id="errorHandler" input-channel="errorChannel"
+		expression="payload.cause.message"/>
 	
 </beans>
