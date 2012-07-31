@@ -14,7 +14,9 @@ public class PwdCommand extends Command{
 
 	@Override
 	public Message<String> run(String contextPath, String[] args) throws IOException{
-		return null;
+		String result = getContextFile(contextPath).getAbsolutePath();
+		logger.info("PWD command on " + contextPath);
+		return buildMessage(contextPath, result);
 	}
 
 }
