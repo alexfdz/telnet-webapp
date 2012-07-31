@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.integration.Message;
 
@@ -40,6 +41,6 @@ public class MkdirCommand extends Command{
 		if(StringUtils.isNotEmpty(path) && new File(path).isAbsolute()){
 			return new File(path);
 		}
-		return new File(contextPath + "/" + path);
+		return new File(FilenameUtils.concat(contextPath, path));
 	}
 }

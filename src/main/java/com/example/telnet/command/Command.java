@@ -80,7 +80,7 @@ public abstract class Command {
 		if(StringUtils.isNotEmpty(path) && new File(path).isAbsolute()){
 			return getContextFile(path);
 		}
-		return getContextFile(contextPath + "/" + path);
+		return getContextFile(FilenameUtils.concat(contextPath, path));
 	}
 	
 	/**

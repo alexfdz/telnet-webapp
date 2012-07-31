@@ -20,7 +20,7 @@ public class LsCommand extends Command{
 		logger.info("LS command on " + contextFile.getAbsolutePath());
 
 		String[] list = contextFile.list();
-		String result =  StringUtils.join(list, "\n\t");
+		String result =  StringUtils.join(list, "\r\n\t");
 		
 		return buildMessage(contextPath, result);
 	}
