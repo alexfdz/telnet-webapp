@@ -8,9 +8,9 @@
 	<packaging>war</packaging>
 
 	<scm>
-		<connection>scm:git:git@github.com:alexfdz/telnet.git</connection>
-		<url>scm:git:git@github.com:alexfdz/telnet.git</url>
-		<developerConnection>scm:git@github.com:alexfdz/telnet.git</developerConnection>
+		<connection>scm:git:git@github.com:alexfdz/telnet-webapp.git</connection>
+		<url>scm:git:git@github.com:alexfdz/telnet-webapp.git</url>
+		<developerConnection>scm:git@github.com:alexfdz/telnet-webapp.git</developerConnection>
 	</scm>
 
 	<properties>
